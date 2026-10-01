@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Chirkutrao Family Tree — DMGT Project</title>
+<style>
+  :root{
+    --forest:#16382B; --forest2:#1F4A39; --paper:#F6F7F2; --card:#FFFFFF;
+    --ink:#1C2A23; --muted:#62736A; --line:#9DB3A5; --gold:#E3A21A; --gold-soft:#FFF3D0; --brick:#A2442C;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{font-family:Georgia,"Times New Roman",serif;background:var(--paper);color:var(--ink);line-height:1.55;-webkit-text-size-adjust:100%}
+  a{color:inherit}
+  :focus-visible{outline:3px solid var(--gold);outline-offset:2px}
+
+  /* hero */
+  .hero{background:var(--forest);color:#F2F5EE;padding:max(56px,env(safe-area-inset-top)) 22px 56px;position:relative;overflow:hidden}
+  .hero::after{content:"";position:absolute;right:-60px;bottom:-60px;width:260px;height:260px;border:2px solid rgba(227,162,26,.35);border-radius:50%}
+  .hero::before{content:"";position:absolute;right:-20px;bottom:-20px;width:180px;height:180px;border:2px solid rgba(227,162,26,.55);border-radius:50%}
+  .wrap{max-width:880px;margin:0 auto;position:relative;z-index:1}
+  .tag{display:inline-block;font-size:.85rem;color:var(--gold);border:1px solid rgba(227,162,26,.6);padding:3px 12px;border-radius:99px;margin-bottom:18px}
+  h1{font-size:clamp(2.6rem,9vw,4.4rem);line-height:1.05;font-weight:700;letter-spacing:-.01em}
+  .lead{margin-top:16px;max-width:560px;font-size:1.08rem;color:#CBD9CF}
+  .actions{display:flex;flex-wrap:wrap;gap:12px;margin-top:28px}
+  .btn{font:inherit;font-size:1rem;padding:12px 22px;border-radius:99px;border:2px solid var(--gold);cursor:pointer;text-decoration:none;display:inline-block;min-height:46px}
+  .btn.primary{background:var(--gold);color:#2A1D00;font-weight:700}
+  .btn.ghost{background:transparent;color:var(--gold)}
+  .btn:active{transform:translateY(1px)}
+
+  section{padding:52px 22px}
+  section h2{font-size:1.9rem;line-height:1.2;margin-bottom:6px}
+  .sub{color:var(--muted);margin-bottom:24px;max-width:600px}
+
+  /* tree */
+  .toolbar{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:18px;align-items:center}
+  .toolbar .btn{padding:8px 18px;min-height:40px;font-size:.92rem;border-color:var(--forest);color:var(--forest);background:#fff}
+  .toolbar .btn.on{background:var(--forest);color:#fff}
+  .toolbar .note{font-size:.88rem;color:var(--muted)}
+  .tree{background:var(--card);border:1px solid #DCE4DD;border-radius:14px;padding:18px 14px 20px;overflow-x:auto}
+  .tree ul{list-style:none;margin-left:18px;padding-left:18px;border-left:2px solid var(--line)}
+  .tree>ul{margin-left:0;padding-left:0;border-left:0}
+  .tree li{position:relative;padding:5px 0}
+  .tree ul li::before{content:"";position:absolute;left:-18px;top:25px;width:18px;border-top:2px solid var(--line)}
+  .tree>ul>li::before{display:none}
+  .tree li.hide>ul{display:none}
+  .row{display:inline-flex;align-items:center;gap:10px;background:#F4F8F4;border:2px solid var(--line);border-radius:12px;padding:6px 12px 6px 8px;font:inherit;color:var(--ink);text-align:left;cursor:default;min-height:44px}
+  .row.has{cursor:pointer}
+  .row .av{font-size:1.4rem;line-height:1}
+  .row b{display:block;font-size:1.02rem;line-height:1.2}
+  .row small{display:block;font-size:.8rem;color:var(--brick);line-height:1.2}
+  .row .lv{font-size:.75rem;color:var(--muted)}
+  .row .chev{margin-left:4px;font-size:.8rem;color:var(--forest);transition:transform .15s}
+  li:not(.hide)>.row .chev{transform:rotate(90deg)}
+  .row.root{background:var(--forest);color:#fff;border-color:var(--forest)}
+  .row.root small{color:#F4C766}.row.root .lv{color:#9FB8A9}.row.root .chev{color:#fff}
+  .row.path{background:var(--gold-soft);border-color:var(--gold);box-shadow:0 0 0 3px rgba(227,162,26,.25)}
+  .row.path small{color:#8A5E00}
+  .row.root.path{color:var(--ink)}
+  .row.root.path .lv{color:var(--muted)}.row.root.path .chev{color:var(--forest)}
+  .row.me{background:var(--gold);border-color:#B87C00}
+  .row.me b{color:#2A1D00}
+
+  /* generations */
+  .gens{display:grid;gap:14px;grid-template-columns:repeat(auto-fit,minmax(200px,1fr))}
+  .gen{background:var(--card);border:1px solid #DCE4DD;border-radius:12px;padding:16px 16px 14px;border-top:5px solid var(--forest2)}
+  .gen:nth-child(1){border-top-color:var(--gold)}
+  .gen h3{font-size:1.05rem}
+  .gen .n{font-size:.88rem;color:var(--muted);margin:2px 0 8px}
+  .gen p{font-size:.95rem}
+
+  /* branches */
+  .branches{display:grid;gap:14px;grid-template-columns:repeat(auto-fit,minmax(240px,1fr))}
+  .br{background:var(--card);border:1px solid #DCE4DD;border-radius:12px;padding:16px}
+  .br h3{font-size:1.1rem}
+  .br .meta{font-size:.88rem;color:var(--muted);margin:2px 0 10px}
+  .chips{display:flex;flex-wrap:wrap;gap:6px}
+  .chip{font-size:.85rem;background:#EEF3EE;border:1px solid #D2DDD4;border-radius:99px;padding:2px 10px}
+  .br.big{border-color:var(--forest2);grid-column:1/-1}
+  .sub-br{margin-top:12px}
+  .sub-br h4{font-size:.95rem;margin-bottom:5px}
+
+  /* numbers */
+  .nums{background:var(--forest);color:#F2F5EE}
+  .nums .sub{color:#B9CCBF}
+  .stats{display:grid;gap:14px;grid-template-columns:repeat(auto-fit,minmax(150px,1fr))}
+  .stat{border:1px solid rgba(255,255,255,.2);border-radius:12px;padding:14px 16px}
+  .stat .v{font-size:2.2rem;font-weight:700;color:var(--gold);line-height:1.1}
+  .stat .l{font-size:.95rem}
+  .stat .d{font-size:.8rem;color:#B9CCBF;margin-top:2px}
+  footer{padding:26px 22px calc(26px + env(safe-area-inset-bottom));text-align:center;font-size:.88rem;color:var(--muted)}
+  @media (prefers-reduced-motion:reduce){*{transition:none!important;scroll-behavior:auto!important}}
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <div class="wrap">
+    <span class="tag">DMGT Project</span>
+    <h1>DMGT (Tree)</h1>
+    <p class="lead">A rooted-tree model of a four-generation family, with Chirkutrao and Shanti as the root and every descendant as a vertex. Developed for Discrete Mathematics and Graph Theory (DMGT).</p>
+    <div class="actions">
+      <a class="btn primary" href="#tree" id="traceTop">Trace Prajwal's lineage</a>
+      <a class="btn ghost" href="#tree">Open the tree</a>
+    </div>
+  </div>
+</header>
+
+<section id="tree">
+  <div class="wrap">
+    <h2>The Family Tree</h2>
+    <p class="sub">Tap a name to open or close its branch.</p>
+    <div class="toolbar">
+      <button class="btn" id="trace">Trace Prajwal's lineage</button>
+      <button class="btn" id="expand">Expand all</button>
+      <button class="btn" id="reset">Reset</button>
+      <span class="note" id="pathNote"></span>
+    </div>
+    <div class="tree" id="treeBox" aria-label="Family tree"></div>
+  </div>
+</section>
+
+<section id="generations" style="background:#EBF0EA">
+  <div class="wrap">
+    <h2>Generations</h2>
+    <p class="sub">Each generation is one level of the tree, counted by edges from the root.</p>
+    <div class="gens" id="gens"></div>
+  </div>
+</section>
+
+<section id="branches">
+  <div class="wrap">
+    <h2>Branches</h2>
+    <p class="sub">Every child of the root starts a branch. Yadavrao's branch is the one that leads to Prajwal.</p>
+    <div class="branches" id="branchBox"></div>
+  </div>
+</section>
+
+<section class="nums" id="numbers">
+  <div class="wrap">
+    <h2>The Family in Numbers</h2>
+    <p class="sub">The same family, read as a graph: people are vertices, parent–child links are edges.</p>
+    <div class="stats" id="stats"></div>
+  </div>
+</section>
+
+<footer>DMGT Project — Discrete Mathematics and Graph Theory · Chirkutrao Family Tree</footer>
+
+<script>
+const FAMILY = {
+  id:"chirkutrao", name:"Chirkutrao", sp:"Shanti", em:"👴", kids:[
+    {id:"dharmendra", name:"Dharmendra", em:"👨", kids:[]},
+    {id:"madhavrao", name:"Madhavrao", em:"👨", kids:[]},
+    {id:"yadavrao", name:"Yadavrao", sp:"Sushila", em:"👨", kids:[
+      {id:"mira", name:"Mira", em:"👩", kids:[
+        {id:"sangita",name:"Sangita",em:"👧",kids:[]},
+        {id:"sunil",name:"Sunil",em:"👦",kids:[]},
+        {id:"ravindra",name:"Ravindra",em:"👦",kids:[]}]},
+      {id:"manda", name:"Manda", em:"👩", kids:[
+        {id:"madhuri",name:"Madhuri",em:"👧",kids:[]},
+        {id:"priya",name:"Priya",em:"👧",kids:[]},
+        {id:"karishma",name:"Karishma",em:"👧",kids:[]}]},
+      {id:"nanda", name:"Nanda", em:"👩", kids:[
+        {id:"payal",name:"Payal",em:"👧",kids:[]},
+        {id:"nayan",name:"Nayan",em:"👦",kids:[]}]},
+      {id:"arun", name:"Arun", em:"👨", kids:[
+        {id:"jayshree",name:"Jayshree",em:"👧",kids:[]},
+        {id:"jyotsna",name:"Jyotsna",em:"👧",kids:[]},
+        {id:"roshan",name:"Roshan",em:"👦",kids:[]}]},
+      {id:"yuvraj", name:"Yuvraj", sp:"Chitra", em:"👨", kids:[
+        {id:"prajwal",name:"Prajwal",em:"👦",me:true,kids:[]},
+        {id:"trupti",name:"Trupti",em:"👧",kids:[]}]}
+    ]},
+    {id:"ganesh", name:"Ganesh", em:"👨", kids:[]}
+  ]
+};
+const ME = "prajwal";
+
+/* ---- helpers ---- */
+const parent = new Map(), level = new Map(), byId = new Map();
+(function walk(n,p,l){ byId.set(n.id,n); level.set(n.id,l); if(p) parent.set(n.id,p.id); n.kids.forEach(k=>walk(k,n,l+1)); })(FAMILY,null,0);
+const all = [...byId.values()];
+const GEN_NAMES = ["Root","Branches","Cousins","Grandchildren"];
+function descendants(n){ return n.kids.flatMap(k=>[k,...descendants(k)]); }
+
+/* ---- tree render ---- */
+const box = document.getElementById("treeBox");
+function li(n){
+  const has = n.kids.length>0;
+  const lv = level.get(n.id);
+  const el = document.createElement("li");
+  el.dataset.id = n.id;
+  const row = document.createElement(has?"button":"div");
+  row.className = "row"+(has?" has":"")+(lv===0?" root":"")+(n.me?" me":"");
+  row.innerHTML = `<span class="av">${n.me?"⭐":n.em}</span><span><b>${n.name}${n.me?" (You)":""}</b>${n.sp?`<small>♥ ${n.sp}</small>`:""}<span class="lv">Level ${lv}${has?` · ${n.kids.length} ${n.kids.length>1?"children":"child"}`:" · leaf"}</span></span>${has?'<span class="chev">▶</span>':""}`;
+  if(has){ row.setAttribute("aria-expanded","true"); row.addEventListener("click",()=>{ el.classList.toggle("hide"); row.setAttribute("aria-expanded",!el.classList.contains("hide")); }); }
+  el.appendChild(row);
+  if(has){ const ul=document.createElement("ul"); n.kids.forEach(k=>ul.appendChild(li(k))); el.appendChild(ul); }
+  return el;
+}
+const rootUl = document.createElement("ul"); rootUl.appendChild(li(FAMILY)); box.appendChild(rootUl);
+
+function setOpen(id,open){ const el=box.querySelector(`li[data-id="${id}"]`); if(!el) return; const b=el.querySelector(":scope>.row.has"); if(!b) return; el.classList.toggle("hide",!open); b.setAttribute("aria-expanded",open); }
+function clearPath(){ box.querySelectorAll(".row.path").forEach(r=>r.classList.remove("path")); document.getElementById("pathNote").textContent=""; document.getElementById("trace").classList.remove("on"); }
+function resetTree(){
+  clearPath();
+  all.forEach(n=>{ if(n.kids.length) setOpen(n.id, level.get(n.id)<=1); });
+}
+function expandAll(){ clearPath(); all.forEach(n=>{ if(n.kids.length) setOpen(n.id,true); }); }
+function trace(){
+  all.forEach(n=>{ if(n.kids.length) setOpen(n.id,false); });
+  clearPath();
+  const names=[]; let id=ME;
+  while(id){ names.unshift(byId.get(id).name); const row=box.querySelector(`li[data-id="${id}"]>.row`); row.classList.add("path"); const p=parent.get(id); if(p) setOpen(p,true); id=p; }
+  document.getElementById("pathNote").textContent = names.join(" → ");
+  document.getElementById("trace").classList.add("on");
+  box.querySelector(`li[data-id="${ME}"]>.row`).scrollIntoView({block:"center",behavior:"smooth"});
+}
+document.getElementById("reset").onclick=resetTree;
+document.getElementById("expand").onclick=expandAll;
+document.getElementById("trace").onclick=trace;
+document.getElementById("traceTop").addEventListener("click",()=>setTimeout(trace,350));
+resetTree();
+
+/* ---- generations ---- */
+const maxL = Math.max(...level.values());
+const gens = document.getElementById("gens");
+for(let l=0;l<=maxL;l++){
+  const ns = all.filter(n=>level.get(n.id)===l);
+  const d = document.createElement("div"); d.className="gen";
+  d.innerHTML = `<h3>Generation ${l+1} — ${GEN_NAMES[l]}</h3><div class="n">Level ${l} · ${ns.length} ${ns.length>1?"people":"person"}</div><p>${ns.map(n=>n.name).join(", ")}</p>`;
+  gens.appendChild(d);
+}
+
+/* ---- branches ---- */
+const bb = document.getElementById("branchBox");
+FAMILY.kids.forEach(b=>{
+  const ds = descendants(b);
+  const d = document.createElement("div"); d.className="br"+(b.kids.length?" big":"");
+  let html = `<h3>${b.em} ${b.name}'s branch</h3><div class="meta">${b.kids.length?`${ds.length} descendants · height ${Math.max(...ds.map(x=>level.get(x.id)))-level.get(b.id)}`:"No descendants shown yet · leaf"}</div>`;
+  if(b.kids.length){
+    html += b.kids.map(k=>`<div class="sub-br"><h4>${k.name}${k.sp?` ♥ ${k.sp}`:""}</h4><div class="chips">${k.kids.length?k.kids.map(c=>`<span class="chip">${c.name}</span>`).join(""):'<span class="chip">leaf</span>'}</div></div>`).join("");
+  }
+  d.innerHTML = html; bb.appendChild(d);
+});
+
+/* ---- numbers ---- */
+const internal = all.filter(n=>n.kids.length), leaves = all.filter(n=>!n.kids.length);
+const maxKids = internal.reduce((a,b)=>b.kids.length>a.kids.length?b:a);
+const widths = Array.from({length:maxL+1},(_,l)=>all.filter(n=>level.get(n.id)===l).length);
+const stats = [
+  [all.length,"Vertices","People in the tree"],
+  [all.length-1,"Edges","Always vertices − 1"],
+  [maxL,"Height","Edges from root to deepest leaf"],
+  [maxL+1,"Generations","Levels 0 to "+maxL],
+  [leaves.length,"Leaves","Vertices with no children"],
+  [internal.length,"Internal vertices","Vertices with children"],
+  [maxKids.kids.length,"Max children","Most children: "+maxKids.name],
+  [Math.max(...widths),"Widest level","Level "+widths.indexOf(Math.max(...widths))]
+];
+document.getElementById("stats").innerHTML = stats.map(s=>`<div class="stat"><div class="v">${s[0]}</div><div class="l">${s[1]}</div><div class="d">${s[2]}</div></div>`).join("");
+</script>
+</body>
+</html>
